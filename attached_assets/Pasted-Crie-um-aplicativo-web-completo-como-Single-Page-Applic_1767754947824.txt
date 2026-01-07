@@ -1,0 +1,73 @@
+Crie um aplicativo web completo como Single Page Application (SPA), rodando inteiramente no navegador, sem backend server (use apenas localStorage ou sessionStorage para dados temporários). O app se chama "Geneseez Studio" e é uma ferramenta profissional para criar vídeos curtos animados estilo Minecraft de forma guiada, usando IAs.
+
+Requisitos gerais:
+- Todo o app em UMA ÚNICA PÁGINA HTML (index.html) + CSS inline ou <style> + JavaScript.
+- Design minimalista preto e branco moderno, profissional e credível como uma empresa renomada (ex: tipografia como Apple ou studio de design high-end).
+  - Paleta: Fundo #000000 (preto), texto #FFFFFF (branco), acentos #CCCCCC (cinza claro) para bordas/subtitles.
+  - Tipografia: Sans-serif bold (use 'Inter' ou 'Helvetica Neue' via Google Fonts, ou system fonts: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto).
+  - Muito whitespace, layout centralizado, elementos com padding generoso.
+  - Neumorphism sutil: botões com background #111111, box-shadow suave (inset e outset) para efeito "pressed" no hover/active.
+  - Transições suaves: Todas as mudanças de etapa com CSS transition (fade + slide left/right, 0.5s ease).
+  - Progress bar horizontal no topo: 4 passos, linha fina branca preenchendo progressivamente.
+  - Header fixo: Logo "Geneseez Studio" à esquerda (fonte bold grande branca), tagline sutil "AI-Powered Minecraft Video Creator" abaixo.
+  - Mobile responsive: Flexbox/Grid, breakpoints para telas pequenas (botões maiores, stack vertical).
+  - Acessibilidade: Alto contraste, alt texts em imagens, aria-labels em botões.
+  - Loading states: Spinner minimalista (círculo girando branco fino) centralizado com overlay semi-transparente.
+  - Erros: Mensagens em box vermelho sutil com retry button.
+
+Estrutura: Wizard com 4 etapas, todas no mesmo DOM, hidden/shown com classes CSS (ex: .step { display: none; } .active { display: block; }).
+- Botões de navegação: "Próximo" (primário, grande, branco no preto), "Voltar" (secundário, outline), desabilitado no primeiro passo.
+- Ao clicar "Próximo": Validação simples (campos preenchidos), animação fade-out da etapa atual + fade-in da próxima.
+
+Etapa 1: Criação do Personagem
+- Título grande: "Crie seu Personagem Minecraft"
+- Descrição: "Descreva o personagem em estilo blocky Minecraft (ex: guerreiro com armadura vermelha, cabelo azul)."
+- Textarea grande para prompt (placeholder detalhado).
+- Botão "Gerar Personagem" (desabilitado até prompt > 20 chars).
+- Ao gerar: Chame placeholder API (use URL exemplo de Leonardo.ai ou CGDream: const API_CHARACTER = 'https://api.leonardo.ai/v1/generations'; – inclua instruções para trocar por chave real).
+- Gere exatamente 8 imagens: frente, trás, lados esquerdo/direito, 45 graus x2, pose andando, pose pulando. Prompt automático: adicione "Minecraft style, blocky, consistent character, [view: front/full body]" etc.
+- Mostre grid gallery 4x2 responsivo com as imagens (loading spinner até todas carregarem).
+- Mensagem: "Essas views garantem consistência nas próximas etapas."
+- Botão "Confirmar Personagem" (armazene URLs das 8 imagens no sessionStorage como array 'characterRefs').
+- Erro: Se falhar, "Erro na geração. Tente novamente." + retry.
+
+Etapa 2: Storyboard
+- Título: "Crie o Storyboard"
+- Descrição: "Descreva a história curta (máx 500 chars). Geraremos exatamente 6 cenas consistentes com seu personagem."
+- Textarea para história.
+- Botão "Gerar Storyboard".
+- Use references das imagens da Etapa 1 para consistency (placeholder API Katalist.ai ou LTX Studio).
+- Mostre 6 cards em grid (2x3 mobile stack): imagem da cena + caption curto auto-gerado.
+- Contador de regenerações: Máximo 5 total (variável global, armazene em sessionStorage).
+- Por card: Botão "Regenerar esta cena" (incrementa contador, bloqueia se >5, mensagem "Limite de 5 regenerações atingido. Prossiga.").
+- Não permita salvar/exportar storyboard (não há botão download aqui).
+- Botão "Confirmar Storyboard" (armazene URLs das 6 imagens como 'storyboardImages').
+
+Etapa 3: Animação das Cenas
+- Título: "Anime as Cenas"
+- Descrição: "Anime uma por uma. Para cada cena, descreva fala e movimentos (ex: 'personagem anda para direita falando Olá!, expressão feliz, fundo nuvens')."
+- Loop sequencial: Mostre uma cena por vez (imagem grande central + textarea abaixo).
+- Botão "Animar esta Cena" → Chame placeholder API (HeyGen ou Kling image-to-video com lip-sync).
+- Gere clip curto (5-10s) com motion simples + lip-sync.
+- Preview: <video> tag com o clip animado.
+- Após animar, auto-avança para próxima cena (ou botão "Próxima Cena").
+- Armazene URLs dos 6 clips como 'animatedClips'.
+
+Etapa 4: Transições e Vídeo Final
+- Título: "Finalizar Vídeo"
+- Liste previews pequenos dos 6 clips animados.
+- Textarea: "Descreva transições (ex: fade suave com efeito pixelado Minecraft entre cenas)."
+- Botão "Gerar Vídeo Completo".
+- Use FFmpeg.wasm no browser: Importe via CDN (<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>).
+- Carregue os 6 clips, aplique transições (fade ou custom via filter_complex), concatene em um vídeo MP4.
+- Preview grande do vídeo final + botão "Download Vídeo" (createObjectURL).
+- Mensagem final: "Vídeo pronto! Só o vídeo final pode ser salvo."
+- Limpe sessionStorage ao download.
+
+Inclua:
+- Placeholders claros para APIs (const API_KEY = 'SUA_CHAVE';) com comentários "Troque pela sua chave free de Leonardo.ai / HeyGen etc."
+- Instruções no código: Como testar com mocks se APIs pagas.
+- Código completo, funcional no Replit (index.html único arquivo ou multi com Replit support).
+- Evite erros comuns: Async/await para chamadas, try/catch, prevent default em forms, clear intervals se necessário.
+
+Gere o código HTML/CSS/JS completo, bonito e profissional.
