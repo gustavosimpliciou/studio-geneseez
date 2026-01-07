@@ -55,7 +55,6 @@ export default function Step1Character() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
         },
         mode: 'cors',
         body: JSON.stringify(payload),
@@ -72,7 +71,13 @@ export default function Step1Character() {
       await new Promise(resolve => setTimeout(resolve, 5000));
 
       // Expecting data.images or data.image from n8n
-      const newImages = data.images || (data.image ? [data.image] : []);
+      let newImages: string[] = [];
+      if (Array.isArray(data)) {
+        // n8n might return an array of items directly
+        newImages = data.map(item => item.images || item.image).filter(Boolean).flat();
+      } else {
+        newImages = data.images || (data.image ? [data.image] : []);
+      }
       
       if (newImages.length > 0) {
         setGeneratedImages(newImages);
@@ -81,6 +86,7 @@ export default function Step1Character() {
           description: "Select your favorite style to proceed.",
         });
       } else {
+        console.warn("No images in response:", data);
         throw new Error("No images returned from n8n");
       }
     } catch (error) {
